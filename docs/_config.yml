@@ -1,0 +1,25 @@
+title: SQL Chatter
+description: This projects walks you through accelerating developer productivity with GitHub Copilot.
+theme: just-the-docs
+
+url: https://just-the-docs.github.io
+
+aux_links:
+  "SQL Chatter": 
+    - "https://github.com/241/ghcopilotdemo/tree/main"
+callouts_level: quiet # or loud
+callouts:
+  highlight:
+    color: yellow
+  important:
+    title: Important
+    color: blue
+  new:
+    title: New
+    color: green
+  note:
+    title: Note 
+    color: purple
+  warning:
+    title: Warning
+    color: red

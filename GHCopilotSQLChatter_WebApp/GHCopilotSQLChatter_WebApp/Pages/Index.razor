@@ -1,0 +1,136 @@
+﻿@page "/"
+
+<h3>SQL Query Sender</h3>
+
+<div class="form-group">
+    <label for="queryInput">Enter your query:</label>
+    <textarea @bind="sqlQuery" class="form-control" rows="5" id="queryInput" placeholder="Write your SQL query here..."></textarea>
+</div>
+
+<button class="btn btn-primary mt-3" @onclick="SendQuery">
+    <i class="oi oi-media-play"></i> Run Query
+</button>
+
+@if (!string.IsNullOrEmpty(responseMessage))
+{
+    <div class="alert alert-info mt-3">
+        <strong>Response:</strong>
+        <pre>@responseMessage</pre>
+    </div>
+}
+
+@if (columns != null && rows != null)
+{
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                @foreach (var column in columns)
+                {
+                    <th>@column</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in rows)
+            {
+                <tr>
+                    @foreach (var cell in row)
+                    {
+                        <td>@cell</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private string sqlQuery = string.Empty;
+    private string responseMessage = string.Empty;
+    private List<string> columns = null;
+    private List<List<string>> rows = null;
+
+    [Inject] HttpClient Http { get; set; }
+
+    private async Task SendQuery()
+    {
+        if (!string.IsNullOrEmpty(sqlQuery))
+        {
+            try
+            {
+                // Creating the request:
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7029/SQLChatter/execute-query");
+
+                // We are sending the content as JSON:
+                request.Content = new StringContent($"\"{sqlQuery}\"", System.Text.Encoding.UTF8, "application/json");
+
+                // The Accept header is expected to be text/plain:
+                request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("text/plain"));
+
+                // Sending the request:
+                var response = await Http.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+
+                    try
+                    {
+                        // We parse the json data to table structure:
+                        var jsonResponse = System.Text.Json.JsonDocument.Parse(responseBody);
+                        var jsonColumns = jsonResponse.RootElement.GetProperty("columns").EnumerateArray();
+                        var jsonRows = jsonResponse.RootElement.GetProperty("rows").EnumerateArray();
+
+                        // The columns:
+                        columns = new List<string>();
+                        foreach (var column in jsonColumns)
+                        {
+                            columns.Add(column.GetString());
+                        }
+
+                        // The rows:
+                        rows = new List<List<string>>();
+                        foreach (var row in jsonRows)
+                        {
+                            var rowData = new List<string>();
+                            foreach (var cell in row.EnumerateArray())
+                            {
+                                rowData.Add(cell.GetString());
+                            }
+                            rows.Add(rowData);
+                        }
+
+                        // If table cannot be created successfully, reset the table:
+                        responseMessage = "Query executed successfully.";
+                    }
+                    catch (Exception ex)
+                    {
+                        // If JSON format is different than expected:
+                        columns = null;
+                        rows = null;
+                        responseMessage = $"Error parsing response: {ex.Message}";
+                    }
+                }
+                else
+                {
+                    columns = null;
+                    rows = null;
+                    responseMessage = $"Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}";
+                }
+            }
+            catch (Exception ex)
+            {
+                columns = null;
+                rows = null;
+                responseMessage = $"Exception: {ex.Message}";
+            }
+        }
+        else
+        {
+            responseMessage = "Query cannot be empty!";
+        }
+
+        // Ensure the component re-renders to show the message
+        StateHasChanged();
+    }
+}

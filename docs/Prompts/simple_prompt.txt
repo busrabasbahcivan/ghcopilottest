@@ -1,0 +1,28 @@
+Using the schema of the SalesLT database below, generate SQL queries for the following tasks. Provide the result as "Summary" and "SQL Query."
+
+SalesLT Database Schema:
+
+- Address (AddressID, AddressLine1, AddressLine2, City, StateProvince, CountryRegion, PostalCode, rowguid, ModifiedDate)
+- Customer (CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, rowguid, ModifiedDate)
+- CustomerAddress (CustomerID, AddressID, AddressType, rowguid, ModifiedDate)
+- Product (ProductID, Name, ProductNumber, Color, StandardCost, ListPrice, Size, Weight, ProductCategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, ThumbNailPhoto, ThumbnailPhotoFileName, rowguid, ModifiedDate)
+- ProductCategory (ProductCategoryID, ParentProductCategoryID, Name, rowguid, ModifiedDate)
+- ProductDescription (ProductDescriptionID, Description, rowguid, ModifiedDate)
+- ProductModel (ProductModelID, Name, CatalogDescription, rowguid, ModifiedDate)
+- ProductModelProductDescription (ProductModelID, ProductDescriptionID, Culture, rowguid, ModifiedDate)
+- SalesOrderDetail (SalesOrderID, SalesOrderDetailID, OrderQty, ProductID, UnitPrice, UnitPriceDiscount, LineTotal, rowguid, ModifiedDate)
+- SalesOrderHeader (SalesOrderID, RevisionNumber, OrderDate, DueDate, ShipDate, Status, OnlineOrderFlag, SalesOrderNumber, PurchaseOrderNumber, AccountNumber, CustomerID, ShipToAddressID, BillToAddressID, ShipMethod, CreditCardApprovalCode, SubTotal, TaxAmt, Freight, TotalDue, Comment, rowguid, ModifiedDate)
+ 
+Example Tasks:
+
+1. Retrieve the list of all customers along with their email addresses.
+2. Find the total sales amount for each product.
+3. List all orders placed in the last 30 days.
+4. Get the details of customers who have placed more than 5 orders.
+5. Find the products that have never been ordered.
+
+Provide the result as:
+
+Summary: A brief description of what the query does.
+
+SQL Query: The SQL query that accomplishes the task.
