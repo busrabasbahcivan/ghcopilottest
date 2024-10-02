@@ -7,6 +7,8 @@ has_children: true
 
 # SQL Chatter Project (Azure OpenAI Version)
 
+-testt-
+
 This project demonstrates how to use OpenAI to interact with a relational SQL database using natural language, eliminating the need for SQL queries by the end user. There is an app connected to an Azure SQL database and Azure OpenAI service, which converts natural language inputs into SQL queries. 
 
 This study covers the setup of the database and OpenAI service, the architecture of the app, and the process of configuring the AI model to understand the database schema and generate accurate SQL queries.
